@@ -1,0 +1,1 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/tvqqq/go-morning-slack/tree/main.svg?style=svg&circle-token=d9aa2486a1fda59f262394a3f7b6a35c6130cb18)](https://dl.circleci.com/status-badge/redirect/gh/tvqqq/go-morning-slack/tree/main)
