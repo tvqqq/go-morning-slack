@@ -23,48 +23,7 @@ type slackDataSend struct {
 
 func main() {
 	jsonQuote := getQuote()
-	log.Println(jsonQuote)
-
-	// Slack
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	slackUrl := os.Getenv("SLACK_WEBHOOK_URL")
-	dataSend := slackDataSend{
-		Text: fmt.Sprintf("%s - %s", jsonQuote.Text, jsonQuote.Author),
-	}
-
-	jsonDataSend, jsonErr := json.Marshal(dataSend)
-	if jsonErr != nil {
-		log.Fatal(jsonErr)
-	}
-
-	byteDataSend := bytes.NewBuffer(jsonDataSend)
-
-	req, resErr := http.NewRequest(http.MethodPost, slackUrl, byteDataSend)
-	if resErr != nil {
-		log.Fatal(resErr)
-	}
-
-	httpClient := http.Client{
-		Timeout: time.Second * 2,
-	}
-
-	res, resErr := httpClient.Do(req)
-	if resErr != nil {
-		log.Fatal(resErr)
-	}
-
-	var res1 map[string]interface{}
-
-	json.NewDecoder(res.Body).Decode(&res1)
-
-	fmt.Println(res)
-
-	//log.Println(res)
-
+	sendSlack(jsonQuote)
 }
 
 func getQuote() quote {
@@ -100,4 +59,37 @@ func getQuote() quote {
 	}
 
 	return quotes[0]
+}
+
+func sendSlack(jsonQuote quote) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	slackUrl := os.Getenv("SLACK_WEBHOOK_URL")
+	dataSend := slackDataSend{
+		Text: fmt.Sprintf("%s - %s", jsonQuote.Text, jsonQuote.Author),
+	}
+
+	jsonDataSend, jsonErr := json.Marshal(dataSend)
+	if jsonErr != nil {
+		log.Fatal(jsonErr)
+	}
+
+	byteDataSend := bytes.NewBuffer(jsonDataSend)
+
+	req, resErr := http.NewRequest(http.MethodPost, slackUrl, byteDataSend)
+	if resErr != nil {
+		log.Fatal(resErr)
+	}
+
+	httpClient := http.Client{
+		Timeout: time.Second * 2,
+	}
+
+	_, resErr = httpClient.Do(req)
+	if resErr != nil {
+		log.Fatal(resErr)
+	}
 }
