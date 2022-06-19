@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "echo an env var that is part of our project"
+          name: Import env
           command: |
             echo $SLACK_WEBHOOK_URL
       - restore_cache:
@@ -29,6 +29,9 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+      - execute:
+          name: Execute
+          command: go run main.go
       # - run:
       #     name: Run tests
       #     command: |
